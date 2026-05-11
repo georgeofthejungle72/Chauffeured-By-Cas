@@ -18,28 +18,29 @@ async function startServer() {
     }
 
     const resend = new Resend(resendKey);
-    const { pickup, dropoff, date, time, vehicleOptions, phone, email } = req.body;
+    const { name, pickup, dropoff, date, time, vehicleOptions, phone, email } = req.body;
 
-    if (!phone || !email) {
-      return res.status(400).json({ error: "Phone and email are required fields." });
+    if (!name || !phone || !email) {
+      return res.status(400).json({ error: "Name, phone and email are required fields." });
     }
 
     try {
       const data = await resend.emails.send({
         from: 'Enquiries <onboarding@resend.dev>',
-        to: 'giharris594@gmail.com',
+        to: 'cassaleem92@gmail.com',
         subject: 'New Chauffeur Booking!',
         html: `
-          <h2>Booking Details:</h2>
+          <h2>Booking Details -</h2>
           <p><strong>Date:</strong> ${date}</p>
           <p><strong>Time:</strong> ${time} GMT</p>
           <p><strong>Pick-up:</strong> ${pickup}</p>
           <p><strong>Drop-off:</strong> ${dropoff}</p>
           <p><strong>Vehicle:</strong> ${vehicleOptions}</p>
+          <p><strong>Customer Name:</strong> ${name}</p>
           <p><strong>Phone:</strong> ${phone}</p>
           <p><strong>Email:</strong> ${email}</p>
           <br/>
-          <p>Chauffeur request by customer from chauffeurbycas.co.uk</p>
+          <p>Chauffeur request by customer from chauffeuredbycas.co.uk</p>
         `,
       });
 

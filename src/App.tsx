@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { MapPin, Calendar as CalendarIcon, Clock, Users, Luggage, CarFront, CheckCircle2 } from "lucide-react";
+import { MapPin, Calendar as CalendarIcon, Clock, Users, Luggage, CarFront, CheckCircle2, Phone, Mail, ArrowLeft, User, ChevronLeft, ChevronRight, Star, ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Toaster, toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -20,6 +21,44 @@ const API_KEY =
   '';
 const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
 
+const TESTIMONIALS = [
+  {
+    initials: "MT",
+    name: "Michael Triggs",
+    time: "3 months ago",
+    text: "Fantastic service from Cas, reasonably priced and able to accommodate a late same-day journey from Birmingham to...",
+    color: "bg-slate-500 text-white" 
+  },
+  {
+    initials: "M",
+    name: "Marie Lewis",
+    time: "5 months ago",
+    text: "The service was exceptional. A lovely driver, helpful and arrived within great time - all I had to do was get in the car and...",
+    color: "bg-[#0b8a92] text-white"
+  },
+  {
+    initials: "MF",
+    name: "Matt Franck",
+    time: "5 months ago",
+    text: "I needed to get from Litchfield to Bath and checked on the train schedule. It would have taken hours and several transfers. I found...",
+    color: "bg-slate-800 text-white"
+  },
+  {
+    initials: "E",
+    name: "Eric Wild",
+    time: "6 months ago",
+    text: "I recently booked for multiple trips over a few days while in Birmingham, Cheltenham, and then back to Heathrow. Cas - the...",
+    color: "bg-[#c04b24] text-white"
+  },
+  {
+    initials: "JS",
+    name: "James Smith",
+    time: "8 months ago",
+    text: "Outstanding service. The S-Class was immaculate and our journey was smooth. Professional and courteous. Will definitely use again.",
+    color: "bg-[#185adb] text-white"
+  }
+];
+
 function AutocompleteInput({ className, onPlaceSelected, ...props }: React.ComponentProps<typeof Input> & { onPlaceSelected?: (place: google.maps.places.PlaceResult | null) => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const placesLib = useMapsLibrary('places');
@@ -29,7 +68,7 @@ function AutocompleteInput({ className, onPlaceSelected, ...props }: React.Compo
     
     // Use the classic Autocomplete which easily attaches to existing inputs
     const autocomplete = new placesLib.Autocomplete(inputRef.current, {
-      fields: ['formatted_address', 'geometry', 'name'],
+      fields: ['formatted_address', 'geometry', 'name', 'types'],
     });
 
     if (onPlaceSelected) {
@@ -63,6 +102,114 @@ function AutocompleteInput({ className, onPlaceSelected, ...props }: React.Compo
   return <Input ref={inputRef} className={className} {...props} />;
 }
 
+function PrivacyPolicyPage() {
+  return (
+    <div className="min-h-screen bg-dark-bg text-white font-sans selection:bg-gold selection:text-black">
+      {/* Navigation */}
+      <header className="fixed top-0 w-full z-50 border-b border-white/10 bg-black/95 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+          <a href="#" className="flex items-center">
+            <img 
+              src="/cbc-logo.jpeg" 
+              alt="Company Logo" 
+              className="h-14 sm:h-16 md:h-20 w-auto object-contain"
+            />
+          </a>
+          
+          <a href="#" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-xs sm:text-sm font-medium tracking-wider">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </a>
+        </div>
+      </header>
+
+      <main className="pt-40 pb-24 px-6">
+        <div className="max-w-4xl mx-auto bg-white/[0.02] p-8 md:p-12 border border-white/10 rounded-sm">
+          <h1 className="text-4xl font-serif mb-8 text-white">Privacy Policy</h1>
+          <p className="text-white/60 mb-8 text-sm">Last updated: {format(new Date(), 'MMMM d, yyyy')}</p>
+
+          <div className="space-y-8 text-white/70 text-sm leading-relaxed">
+            <section>
+              <h2 className="text-xl font-medium text-white mb-4">1. Introduction</h2>
+              <p>
+                Welcome to Chauffeured By Cas. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website (regardless of where you visit it from) and tell you about your privacy rights and how the law protects you.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-medium text-white mb-4">2. The Data We Collect About You</h2>
+              <p className="mb-4">
+                Personal data, or personal information, means any information about an individual from which that person can be identified. We may collect, use, store and transfer different kinds of personal data about you which we have grouped together as follows:
+              </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li><strong>Identity Data</strong> includes first name, last name, username or similar identifier.</li>
+                <li><strong>Contact Data</strong> includes billing address, email address and telephone numbers.</li>
+                <li><strong>Transaction Data</strong> includes details about payments to and from you and other details of services you have purchased from us (such as pickup/dropoff locations and times).</li>
+                <li><strong>Technical Data</strong> includes internet protocol (IP) address, your login data, browser type and version, time zone setting and location, browser plug-in types and versions, operating system and platform, and other technology on the devices you use to access this website.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-medium text-white mb-4">3. How We Use Your Personal Data</h2>
+              <p className="mb-4">
+                We will only use your personal data when the law allows us to. Most commonly, we will use your personal data in the following circumstances:
+              </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Where we need to perform the contract we are about to enter into or have entered into with you (e.g., providing your requested chauffeur service).</li>
+                <li>Where it is necessary for our legitimate interests (or those of a third party) and your interests and fundamental rights do not override those interests.</li>
+                <li>Where we need to comply with a legal obligation.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-medium text-white mb-4">4. Data Security</h2>
+              <p>
+                We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorised way, altered or disclosed. In addition, we limit access to your personal data to those employees, agents, contractors and other third parties who have a business need to know. They will only process your personal data on our instructions and they are subject to a duty of confidentiality.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-medium text-white mb-4">5. Data Retention</h2>
+              <p>
+                We will only retain your personal data for as long as reasonably necessary to fulfil the purposes we collected it for, including for the purposes of satisfying any legal, regulatory, tax, accounting or reporting requirements. We may retain your personal data for a longer period in the event of a complaint or if we reasonably believe there is a prospect of litigation in respect to our relationship with you.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-medium text-white mb-4">6. Your Legal Rights</h2>
+              <p className="mb-4">
+                Under certain circumstances, you have rights under data protection laws in relation to your personal data, including the right to:
+              </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Request access to your personal data.</li>
+                <li>Request correction of your personal data.</li>
+                <li>Request erasure of your personal data.</li>
+                <li>Object to processing of your personal data.</li>
+                <li>Request restriction of processing your personal data.</li>
+                <li>Request transfer of your personal data.</li>
+                <li>Right to withdraw consent.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-medium text-white mb-4">7. Contact Us</h2>
+              <p>
+                If you have any questions about this privacy policy or our privacy practices, please contact us at: <br/>
+                Email: <a href="mailto:enquiries@chauffeuredbycas.co.uk" className="text-gold hover:underline">enquiries@chauffeuredbycas.co.uk</a><br/>
+                Phone: <a href="tel:+447312250272" className="text-gold hover:underline">+44 7312 250272</a>
+              </p>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <footer className="bg-black py-8 border-t border-white/10 text-center text-white/50 text-xs">
+        <p>&copy; {new Date().getFullYear()} Chauffeured By Cas. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+}
+
 function AppContent() {
   const [date, setDate] = useState<Date>();
   const [bookingSuccess, setBookingSuccess] = useState(false);
@@ -72,6 +219,57 @@ function AppContent() {
   const [dropoffPlace, setDropoffPlace] = useState<google.maps.places.PlaceResult | null>(null);
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
   const routesLib = useMapsLibrary('routes');
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -320, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 320, behavior: 'smooth' });
+    }
+  };
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [showBookButton, setShowBookButton] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const fleetSection = document.getElementById('fleet');
+      if (fleetSection) {
+        if (window.scrollY >= fleetSection.offsetTop - (window.innerHeight / 2)) {
+          setShowBookButton(true);
+        } else {
+          setShowBookButton(false);
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Run once on mount to set initial state
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (isHovered) return;
+    const interval = setInterval(() => {
+      if (scrollContainerRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+        if (scrollLeft >= scrollWidth - clientWidth - 10) {
+          // Reached the end, smoothly scroll back to start
+          scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          scrollContainerRef.current.scrollBy({ left: 320, behavior: 'smooth' });
+        }
+      }
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [isHovered]);
 
   useEffect(() => {
     if (!routesLib || !pickupPlace?.geometry?.location || !dropoffPlace?.geometry?.location) {
@@ -90,7 +288,14 @@ function AppContent() {
         const route = response.routes[0];
         const distanceMeters = route.legs[0]?.distance?.value || 0;
         const distanceMiles = distanceMeters * 0.001051371;
-        setEstimatedPrice(Math.round(distanceMiles * 3));
+        
+        let price = Math.round(distanceMiles * 3);
+        const isAirport = pickupPlace.types?.includes('airport') || dropoffPlace.types?.includes('airport');
+        if (isAirport) {
+          price += 10;
+        }
+        
+        setEstimatedPrice(price);
       } else {
         setEstimatedPrice(null);
       }
@@ -108,6 +313,7 @@ function AppContent() {
     try {
       const formData = new FormData(e.currentTarget);
       const data = {
+        name: formData.get("name"),
         pickup: formData.get("pickup"),
         dropoff: formData.get("dropoff"),
         date: date ? format(date, "PPP") : null,
@@ -142,24 +348,37 @@ function AppContent() {
       <Toaster theme="dark" position="top-center" />
       
       {/* Navigation */}
-      <header className="fixed top-0 w-full z-50 border-b border-white/10 bg-dark-bg/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 border border-white/20 flex items-center justify-center rotate-45">
-              <span className="-rotate-45 text-xs font-serif tracking-widest text-white">MTS</span>
-            </div>
-            <span className="text-lg font-serif tracking-[0.2em] uppercase text-white hidden sm:block">Chauffeur</span>
-          </div>
+      <header className="fixed top-0 w-full z-50 border-b border-white/10 bg-black/95 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+          <a href="#" className="flex items-center">
+            <img 
+              src="/cbc-logo.jpeg" 
+              alt="Company Logo" 
+              className="h-14 sm:h-16 md:h-20 w-auto object-contain"
+            />
+          </a>
           
           <nav className="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-widest text-white/60">
-            <a href="#services" className="hover:text-white transition-opacity duration-300">Services</a>
             <a href="#fleet" className="hover:text-white transition-opacity duration-300">Our Fleet</a>
+            <a href="#services" className="hover:text-white transition-opacity duration-300">Services</a>
+            <a href="#why-us" className="hover:text-white transition-opacity duration-300">About Us</a>
             <a href="#contact" className="hover:text-white transition-opacity duration-300">Contact</a>
           </nav>
           
-          <Button variant="outline" className="border-gold text-gold hover:bg-gold hover:text-black rounded-sm uppercase tracking-widest text-[10px] px-6">
-            Client Login
-          </Button>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-gold"></span>
+              </span>
+            </div>
+            <Button 
+              className="bg-gold text-black hover:bg-gold-hover border-none rounded-sm uppercase tracking-widest text-[10px] px-6"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Contact Us
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -185,7 +404,7 @@ function AppContent() {
               Services.
             </h1>
             <p className="text-sm text-white/40 max-w-md leading-relaxed">
-              Experience the pinnacle of luxury, reliability, and comfort across the West Midlands and all major UK airports.
+              <span className="font-serif text-white italic">Chauffered By Cas</span> - Experience the pinnacle of luxury, reliability, and comfort across the West Midlands and all major UK airports.
             </p>
           </div>
 
@@ -200,19 +419,27 @@ function AppContent() {
               </div>
 
               <form onSubmit={handleBooking} className="space-y-5">
+                <div className="space-y-2">
+                  <Label className="text-[9px] uppercase tracking-widest opacity-40 text-white">Full Name *</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-4 md:top-3 h-4 w-4 text-white/40" />
+                    <Input name="name" required placeholder="John Doe" className="w-full pl-9 bg-black/40 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-gold rounded-sm h-12 md:h-10 text-sm md:text-xs" />
+                  </div>
+                </div>
+
                 <div className="space-y-4">
                   <div className="relative">
                     <MapPin className="absolute left-3 top-4 md:top-3 h-4 w-4 text-white/40" />
-                    <AutocompleteInput onPlaceSelected={setPickupPlace} name="pickup" required placeholder="Pick-Up (e.g. Edgebaston Park Hotel, Birmingham, UK)" className="pl-9 bg-black/40 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-gold focus-visible:border-gold rounded-sm text-sm md:text-xs h-12 md:h-10" />
+                    <AutocompleteInput onPlaceSelected={setPickupPlace} name="pickup" required placeholder="Pick-Up (e.g. Edgebaston Park Hotel, Birmingham, UK)" className="w-full pl-9 bg-black/40 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-gold focus-visible:border-gold rounded-sm text-sm md:text-xs h-12 md:h-10" />
                   </div>
                   
                   <div className="relative">
                     <MapPin className="absolute left-3 top-4 md:top-3 h-4 w-4 text-white/40" />
-                    <AutocompleteInput onPlaceSelected={setDropoffPlace} name="dropoff" required placeholder="Drop-Off (e.g. Birmingham Airport, BHX)" className="pl-9 bg-black/40 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-gold focus-visible:border-gold rounded-sm text-sm md:text-xs h-12 md:h-10" />
+                    <AutocompleteInput onPlaceSelected={setDropoffPlace} name="dropoff" required placeholder="Drop-Off (e.g. Birmingham Airport, BHX)" className="w-full pl-9 bg-black/40 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-gold focus-visible:border-gold rounded-sm text-sm md:text-xs h-12 md:h-10" />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-4 md:space-y-0 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   <div className="space-y-2">
                     <Label className="text-[9px] uppercase tracking-widest opacity-40 text-white">Date</Label>
                     <Popover>
@@ -245,7 +472,7 @@ function AppContent() {
                     <Label className="text-[9px] uppercase tracking-widest opacity-40 text-white">Time</Label>
                     <div className="relative">
                       <Clock className="absolute left-3 top-4 md:top-3 h-4 w-4 text-white/40" />
-                      <Input name="time" type="time" required className="pl-9 bg-black/40 border-white/10 text-white focus-visible:ring-1 focus-visible:ring-gold rounded-sm h-12 md:h-10 text-sm md:text-xs [color-scheme:dark]" />
+                      <Input name="time" type="time" required className="w-full pl-9 bg-black/40 border-white/10 text-white focus-visible:ring-1 focus-visible:ring-gold rounded-sm h-12 md:h-10 text-sm md:text-xs [color-scheme:dark]" />
                     </div>
                   </div>
                 </div>
@@ -257,21 +484,20 @@ function AppContent() {
                        <SelectValue placeholder="Select vehicle class" />
                     </SelectTrigger>
                     <SelectContent className="bg-dark-bg border-white/10 text-white text-xs">
-                      <SelectItem value="MERCEDES S-CLASS">MERCEDES S-CLASS (3 PASS, 2 LUGG)</SelectItem>
-                      <SelectItem value="MERCEDES V-CLASS">MERCEDES V-CLASS (7 PASS, 7 LUGG)</SelectItem>
                       <SelectItem value="MERCEDES E-CLASS">MERCEDES E-CLASS (3 PASS, 2 LUGG)</SelectItem>
+                      
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 space-y-4 sm:space-y-0">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   <div className="space-y-2">
                     <Label className="text-[9px] uppercase tracking-widest opacity-40 text-white">Phone *</Label>
-                    <Input name="phone" type="tel" required placeholder="+44 123 456 7890" className="bg-black/40 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-gold rounded-sm h-12 md:h-10 text-sm md:text-xs" />
+                    <Input name="phone" type="tel" required placeholder="+44 123 456 7890" className="w-full bg-black/40 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-gold rounded-sm h-12 md:h-10 text-sm md:text-xs" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-[9px] uppercase tracking-widest opacity-40 text-white">Email *</Label>
-                    <Input name="email" type="email" required placeholder="you@example.com" className="bg-black/40 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-gold rounded-sm h-12 md:h-10 text-sm md:text-xs" />
+                    <Input name="email" type="email" required placeholder="you@example.com" className="w-full bg-black/40 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-gold rounded-sm h-12 md:h-10 text-sm md:text-xs" />
                   </div>
                 </div>
 
@@ -281,7 +507,7 @@ function AppContent() {
                       <span className="uppercase tracking-widest text-[9px] opacity-60">Estimated Price</span>
                       <span className="font-bold text-lg text-gold mr-1">£{estimatedPrice}</span>
                     </p>
-                    <p className="text-[10px] text-white/30 mt-1">Based on an estimated distance at £3 per mile.</p>
+                    <p className="text-[10px] text-white/30 mt-1">Based on an estimated distance at £3 per mile{(pickupPlace?.types?.includes('airport') || dropoffPlace?.types?.includes('airport')) ? ' + £10 airport surcharge' : ''}.</p>
                   </div>
                 )}
 
@@ -319,32 +545,6 @@ function AppContent() {
             <div className="group cursor-pointer">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-6 border border-white/5 relative">
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/cd/Mercedes-Benz_W223_S_400d_4MATIC_AMG_Line_Obsidian_Black_%281%29.jpg" alt="S-Class" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
-              </div>
-              <h3 className="text-xl font-medium mb-2">Mercedes S-Class</h3>
-              <div className="flex items-center gap-6 text-sm text-white/50">
-                <span className="flex items-center gap-2"><Users className="w-4 h-4"/> 3</span>
-                <span className="flex items-center gap-2"><Luggage className="w-4 h-4"/> 2</span>
-                <span className="flex items-center gap-2"><CarFront className="w-4 h-4"/> Executive</span>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-6 border border-white/5 relative">
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Mercedes-Benz_W447_V_250d_AMG_Line_Black_%281%29.jpg" alt="V-Class" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
-              </div>
-              <h3 className="text-xl font-medium mb-2">Mercedes V-Class</h3>
-              <div className="flex items-center gap-6 text-sm text-white/50">
-                <span className="flex items-center gap-2"><Users className="w-4 h-4"/> 7</span>
-                <span className="flex items-center gap-2"><Luggage className="w-4 h-4"/> 7</span>
-                <span className="flex items-center gap-2"><CarFront className="w-4 h-4"/> Group/Family</span>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-6 border border-white/5 relative">
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c4/Mercedes-Benz_W214_E_450_4MATIC_EXCLUSIVE_Obsidian_Black_%282%29.jpg" alt="E-Class" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 shadow-xl" referrerPolicy="no-referrer" />
               </div>
               <h3 className="text-xl font-medium mb-2">Mercedes E-Class</h3>
@@ -354,17 +554,145 @@ function AppContent() {
                 <span className="flex items-center gap-2"><CarFront className="w-4 h-4"/> Business</span>
               </div>
             </div>
+
+            <div className="group cursor-default opacity-80">
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-6 border border-white/5 relative bg-white/5">
+                <div className="absolute inset-0 bg-black/60 z-10 flex items-center justify-center backdrop-grayscale">
+                  <span className="uppercase tracking-widest text-white/90 text-xs font-medium px-4 py-2 border border-white/20 rounded-full bg-black/40 backdrop-blur-sm">Coming Soon</span>
+                </div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Mercedes-Benz_W447_V_250d_AMG_Line_Black_%281%29.jpg" alt="V-Class" className="w-full h-full object-cover grayscale opacity-50" referrerPolicy="no-referrer" />
+              </div>
+              <h3 className="text-xl font-medium mb-2 text-white/60">Mercedes V-Class</h3>
+              <div className="flex items-center gap-6 text-sm text-white/30">
+                <span className="flex items-center gap-2"><Users className="w-4 h-4"/> 7</span>
+                <span className="flex items-center gap-2"><Luggage className="w-4 h-4"/> 7</span>
+                <span className="flex items-center gap-2"><CarFront className="w-4 h-4"/> Group/Family</span>
+              </div>
+            </div>
+
+            <div className="group cursor-default opacity-80">
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-6 border border-white/5 relative bg-white/5">
+                <div className="absolute inset-0 bg-black/60 z-10 flex items-center justify-center backdrop-grayscale">
+                  <span className="uppercase tracking-widest text-white/90 text-xs font-medium px-4 py-2 border border-white/20 rounded-full bg-black/40 backdrop-blur-sm">Coming Soon</span>
+                </div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/cd/Mercedes-Benz_W223_S_400d_4MATIC_AMG_Line_Obsidian_Black_%281%29.jpg" alt="S-Class" className="w-full h-full object-cover grayscale opacity-50" referrerPolicy="no-referrer" />
+              </div>
+              <h3 className="text-xl font-medium mb-2 text-white/60">Mercedes S-Class</h3>
+              <div className="flex items-center gap-6 text-sm text-white/30">
+                <span className="flex items-center gap-2"><Users className="w-4 h-4"/> 3</span>
+                <span className="flex items-center gap-2"><Luggage className="w-4 h-4"/> 2</span>
+                <span className="flex items-center gap-2"><CarFront className="w-4 h-4"/> Executive</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-24 bg-dark-bg border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-gold mb-4">Our Services</p>
+            <h2 className="text-4xl md:text-5xl font-serif font-light text-white">Travel with Luxury.</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="relative p-8 rounded-2xl overflow-hidden border border-white/5 group min-h-[300px] flex flex-col justify-end">
+              <div className="absolute inset-0 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=800" alt="Airport Transfers" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              </div>
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors z-10"></div>
+              
+              <div className="relative z-20 bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 group-hover:bg-black/50 transition-colors">
+                <div className="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                  <svg className="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-normal text-white mb-2 drop-shadow-md">Airport Transfers</h3>
+                <p className="text-sm text-white/90 leading-relaxed font-normal drop-shadow-sm">Relax before and after your flight with our punctual airport transfer services across all major UK airports.</p>
+              </div>
+            </div>
+            
+            <div className="relative p-8 rounded-2xl overflow-hidden border border-white/5 group min-h-[300px] flex flex-col justify-end">
+              <div className="absolute inset-0 overflow-hidden">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c4/Mercedes-Benz_W214_E_450_4MATIC_EXCLUSIVE_Obsidian_Black_%282%29.jpg" alt="Day-To-Day Luxury Travel" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              </div>
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors z-10"></div>
+
+              <div className="relative z-20 bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 group-hover:bg-black/50 transition-colors">
+                <div className="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                  <svg className="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-normal text-white mb-2 drop-shadow-md">Day-To-Day Luxury Travel</h3>
+                <p className="text-sm text-white/90 leading-relaxed font-normal drop-shadow-sm">Experience ultimate comfort in your everyday journeys, whether shopping, dining, or simply exploring the city.</p>
+              </div>
+            </div>
+            
+            <div className="relative p-8 rounded-2xl overflow-hidden border border-white/5 group min-h-[300px] flex flex-col justify-end">
+              <div className="absolute inset-0 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" alt="Corporate Travel" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              </div>
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors z-10"></div>
+
+              <div className="relative z-20 bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 group-hover:bg-black/50 transition-colors">
+                <div className="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                  <svg className="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-normal text-white mb-2 drop-shadow-md">Corporate Travel</h3>
+                <p className="text-sm text-white/90 leading-relaxed font-normal drop-shadow-sm">Impress your clients and ensure your executives travel in style, prioritizing privacy and professionalism.</p>
+              </div>
+            </div>
+            
+            <div className="relative p-8 rounded-2xl overflow-hidden border border-white/5 group min-h-[300px] flex flex-col justify-end">
+              <div className="absolute inset-0 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800" alt="Event Chauffeurs" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              </div>
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors z-10"></div>
+
+              <div className="relative z-20 bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 group-hover:bg-black/50 transition-colors">
+                <div className="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                  <svg className="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-normal text-white mb-2 drop-shadow-md">Event Chauffeurs</h3>
+                <p className="text-sm text-white/90 leading-relaxed font-normal drop-shadow-sm">Arrive making a statement at any special occasion, gala, or sporting event with a dedicated chauffeur.</p>
+              </div>
+            </div>
+            
+            <div className="relative p-8 rounded-2xl overflow-hidden border border-white/5 group min-h-[300px] flex flex-col justify-end">
+              <div className="absolute inset-0 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&q=80&w=800" alt="Wedding Cars" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              </div>
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors z-10"></div>
+
+              <div className="relative z-20 bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 group-hover:bg-black/50 transition-colors">
+                <div className="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                  <svg className="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-normal text-white mb-2 drop-shadow-md">Wedding Cars</h3>
+                <p className="text-sm text-white/90 leading-relaxed font-normal drop-shadow-sm">Add a touch of elegance to your special day with our immaculate luxury vehicles and suited chauffeurs.</p>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
       {/* Why Choose Us Section */}
-      <section id="services" className="py-24 bg-dark-bg border-y border-white/5">
+      <section id="why-us" className="py-24 bg-dark-bg border-y border-white/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-gold mb-4">Why MTS</p>
+                <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-gold mb-4">Why Chauffeured By Cas</p>
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-white leading-tight">
                   More than just a <br /> journey.
                 </h2>
@@ -413,6 +741,160 @@ function AppContent() {
         </div>
       </section>
 
+      {/* Testimonials Section (hidden for now) */}
+      <section id="testimonials" className="hidden py-24 bg-dark-bg border-t border-white/5 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-4xl font-serif font-light text-white text-center mb-16">Rated Excellent By Our Passengers</h2>
+          
+          <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-stretch">
+            {/* Summary Box */}
+            <div className="w-full lg:w-64 shrink-0 flex flex-col items-center justify-center p-8 bg-white/[0.02] border border-white/10 rounded-2xl">
+              <h3 className="font-bold text-xl tracking-widest text-white mb-4">EXCELLENT</h3>
+              <div className="flex gap-1 mb-2">
+                 {[...Array(5)].map((_, i) => <Star key={i} className="w-6 h-6 fill-gold text-gold" />)}
+              </div>
+              <p className="text-white/60 text-sm mb-4">Based on <strong>224 reviews</strong></p>
+              <div className="mt-2 flex justify-center">
+                <img src="/google-logo.png" alt="Google" className="h-8 object-contain" />
+              </div>
+            </div>
+
+            {/* Cards Container */}
+            <div 
+              className="flex-1 relative w-full group"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              onTouchStart={() => setIsHovered(true)}
+              onTouchEnd={() => setIsHovered(false)}
+            >
+              <button onClick={scrollLeft} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 w-10 h-10 rounded-full bg-black border border-white/20 items-center justify-center text-white hover:bg-white/10 transition-colors shadow-lg opacity-0 group-hover:opacity-100 hidden md:flex">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              <button onClick={scrollRight} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 w-10 h-10 rounded-full bg-black border border-white/20 items-center justify-center text-white hover:bg-white/10 transition-colors shadow-lg opacity-0 group-hover:opacity-100 hidden md:flex">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+
+              <div 
+                ref={scrollContainerRef}
+                className="flex gap-4 overflow-x-auto snap-x snap-mandatory py-4 px-2 no-scrollbar"
+              >
+                {TESTIMONIALS.map((t, i) => (
+                   <div key={i} className="w-[300px] shrink-0 snap-start bg-white/[0.02] border border-white/10 rounded-2xl p-6 flex flex-col hover:bg-white/[0.04] transition-colors relative">
+                      {/* Google Logo small */}
+                      <div className="absolute top-6 right-6">
+                        <img src="/google-small.png" alt="Google" className="w-5 h-5 object-contain" />
+                      </div>
+
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm", t.color)}>
+                          {t.initials}
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-white text-sm">{t.name}</h4>
+                          <span className="text-white/40 text-[11px]">{t.time}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-1 mb-4">
+                        {[...Array(5)].map((_, j) => <Star key={j} className="w-3 h-3 fill-gold text-gold" />)}
+                        <CheckCircle2 className="w-3 h-3 text-blue-500 fill-white ml-1" />
+                      </div>
+
+                      <p className="text-white/70 text-sm leading-relaxed mb-3 flex-1 line-clamp-4">
+                        {t.text}
+                      </p>
+
+                      <button className="text-white/40 hover:text-white text-xs text-left transition-colors w-max">
+                        Read more
+                      </button>
+                   </div>
+                ))}
+              </div>
+              
+              {/* faded edges */}
+              <div className="absolute top-0 bottom-0 left-0 w-12 bg-gradient-to-r from-dark-bg to-transparent pointer-events-none z-10 md:block hidden"></div>
+              <div className="absolute top-0 bottom-0 right-0 w-12 bg-gradient-to-l from-dark-bg to-transparent pointer-events-none z-10 md:block hidden"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-24 bg-dark-bg border-t border-white/5 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-gold/5 blur-[120px] rounded-full pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-gold mb-4">Contact Us</p>
+            <h2 className="text-4xl md:text-5xl font-serif font-light text-white mb-6">
+              Get in Touch
+            </h2>
+            <p className="text-white/50 text-sm leading-relaxed">
+              Based in the West Midlands, we provide premium executive travel and chauffeur services across the UK. Contact our team to discuss your bespoke requirements.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Contact Details */}
+            <div className="space-y-10">
+              <div className="flex gap-6 items-start">
+                <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-white/5 shrink-0">
+                  <Phone className="w-5 h-5 text-gold" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-white font-medium mb-1">Telephone</h4>
+                  <p className="text-white/50 text-sm mb-3">Available 24/7 for bookings and inquiries.</p>
+                  <a href="tel:+447312250272" className="text-xl font-light text-white hover:text-gold transition-colors block">
+                    +44 7312 250272
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex gap-6 items-start">
+                <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-white/5 shrink-0">
+                  <Mail className="w-5 h-5 text-gold" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-white font-medium mb-1">Email</h4>
+                  <p className="text-white/50 text-sm mb-3">We aim to respond to all emails within 1 hour.</p>
+                  <a href="mailto:enquiries@chauffeuredbycas.co.uk" className="text-base sm:text-xl font-light text-white hover:text-gold transition-colors block break-all sm:break-normal">
+                    enquiries@chauffeuredbycas.co.uk
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex gap-6 items-start">
+                <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-white/5 shrink-0">
+                  <MapPin className="w-5 h-5 text-gold" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-white font-medium mb-1">Location</h4>
+                  <p className="text-white/50 text-sm leading-relaxed">
+                    West Midlands, United Kingdom<br />
+                    Serving London, Birmingham, and all major UK airports.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Map */}
+            <div className="relative rounded-2xl overflow-hidden border border-white/10 aspect-square md:aspect-[4/3] bg-white/5 group">
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 pointer-events-none z-10"></div>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d155455.51737750796!2d-2.0232532431713337!3d52.47752150965313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4870942d1b417173%3A0xca81fef0aeee7998!2sBirmingham!5e0!3m2!1sen!2suk!4v1700000000000!5m2!1sen!2suk"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Booking Success Dialog */}
       <Dialog open={bookingSuccess} onOpenChange={setBookingSuccess}>
         <DialogContent className="bg-dark-bg border-white/10 text-white sm:max-w-md">
@@ -434,63 +916,118 @@ function AppContent() {
       </Dialog>
 
       {/* Footer */}
-      <footer id="contact" className="bg-dark-bg py-16 border-t border-white/10">
+      <footer className="bg-black py-16 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12 text-sm text-white/50">
           <div className="col-span-2 md:col-span-1 border-white/10 pb-8 md:pb-0">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 border border-white/20 flex items-center justify-center rotate-45">
-                <span className="-rotate-45 text-xs font-serif tracking-widest text-white">MTS</span>
-              </div>
-              <span className="text-lg font-serif tracking-[0.2em] uppercase text-white hidden sm:block">Chauffeur</span>
+            <div className="flex items-center mb-6">
+              <img 
+                src="/cbc-logo.jpeg" 
+                alt="Company Logo" 
+                className="h-20 sm:h-24 md:h-28 w-auto object-contain"
+              />
             </div>
             <p className="leading-relaxed text-xs">
-              MTS provides premium chauffeur services and airport transfers across the West Midlands, combining luxury with absolute reliability.
+              Chauffeured By Cas provides premium chauffeur services and airport transfers across the West Midlands, combining luxury with absolute reliability.
             </p>
           </div>
           
           <div className="space-y-4">
             <h4 className="text-white font-medium uppercase tracking-widest text-xs mb-6">Company</h4>
             <div className="flex flex-col gap-3">
-              <a href="#" className="hover:text-white transition-colors">About Us</a>
-              <a href="#" className="hover:text-white transition-colors">Testimonials</a>
-              <a href="#" className="hover:text-white transition-colors">Business Accounts</a>
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+              <a href="#why-us" className="hover:text-white transition-colors">About Us</a>
+              {/* <a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a> */}
+              <a href="#" className="hover:text-white transition-colors">Book A Chauffeur</a>
+              <a href="#contact" className="hover:text-white transition-colors">Contact Us</a>
             </div>
           </div>
           
           <div className="space-y-4">
             <h4 className="text-white font-medium uppercase tracking-widest text-xs mb-6">Services</h4>
             <div className="flex flex-col gap-3">
-              <a href="#" className="hover:text-white transition-colors">Airport Transfers</a>
-              <a href="#" className="hover:text-white transition-colors">Corporate Travel</a>
-              <a href="#" className="hover:text-white transition-colors">Event Chauffeurs</a>
-              <a href="#" className="hover:text-white transition-colors">Wedding Cars</a>
+              <a href="#services" className="hover:text-white transition-colors">Airport Transfers</a>
+              <a href="#services" className="hover:text-white transition-colors">Corporate Travel</a>
+              <a href="#services" className="hover:text-white transition-colors">Event Chauffeurs</a>
+              <a href="#services" className="hover:text-white transition-colors">Wedding Cars</a>
             </div>
           </div>
           
           <div className="space-y-4">
             <h4 className="text-white font-medium uppercase tracking-widest text-xs mb-6">Contact Us</h4>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 min-w-0">
               <p>Birmingham, UK</p>
-              <a href="tel:+447830963163" className="hover:text-white transition-colors">+44 (0) 7830 963 163</a>
-              <a href="mailto:info@mehditravelservices.com" className="hover:text-white transition-colors">info@mehditravelservices.com</a>
+              <a href="tel:+447312250272" className="hover:text-white transition-colors">+44 7312 250272</a>
+              <a href="mailto:enquiries@chauffeuredbycas.co.uk" className="hover:text-white transition-colors break-all sm:break-normal">enquiries@chauffeuredbycas.co.uk</a>
             </div>
           </div>
         </div>
         
         <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/30">
-          <p>&copy; {new Date().getFullYear()} MTS Chauffeur Services. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Chauffeured By Cas. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors">Book A Chauffeur</a>
+            <a href="#privacy" className="hover:text-white transition-colors">Privacy Policy</a>
           </div>
         </div>
       </footer>
+      
+      <button 
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className={cn(
+          "fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-gold hover:bg-gold/90 text-black py-3 px-5 md:py-3 md:px-6 rounded-full shadow-[0_4px_20px_rgba(197,160,89,0.3)] transition-all duration-700 z-50 group flex items-center justify-center gap-2",
+          showBookButton ? "opacity-100 translate-y-0 hover:scale-105" : "opacity-0 translate-y-8 pointer-events-none"
+        )}
+        aria-label="Book Chauffeur"
+      >
+        <span className="text-xs font-semibold uppercase tracking-widest">Book Chauffeur</span>
+        <ArrowUp className="w-4 h-4 md:w-5 md:h-5 group-hover:-translate-y-1 transition-transform" />
+      </button>
     </div>
   );
 }
 
+function AppRouter() {
+  const [currentPath, setCurrentPath] = useState(
+    window.location.hash === '#privacy' ? '#privacy' : '#'
+  );
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash === '#privacy') {
+        setCurrentPath('#privacy');
+        window.scrollTo(0, 0);
+      } else if (currentPath === '#privacy') {
+        setCurrentPath('#');
+        if (hash === '#' || !hash) {
+          window.scrollTo(0, 0);
+        } else {
+          setTimeout(() => {
+            document.querySelector(hash)?.scrollIntoView();
+          }, 0);
+        }
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [currentPath]);
+
+  if (currentPath === '#privacy') {
+    return <PrivacyPolicyPage />;
+  }
+
+  return <AppContent />;
+}
+
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   if (!hasValidKey) {
     return (
       <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',backgroundColor:'#050505',color:'white',fontFamily:'sans-serif'}}>
@@ -512,8 +1049,22 @@ export default function App() {
   }
 
   return (
-    <APIProvider apiKey={API_KEY} version="weekly">
-      <AppContent />
-    </APIProvider>
+    <>
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: 'easeInOut' }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
+          >
+            <img src="/cbc-logo.jpeg" alt="Company Logo" className="w-[80vw] sm:w-[60vw] md:w-auto h-auto md:h-72 lg:h-96 max-w-[90vw] object-contain" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <APIProvider apiKey={API_KEY} version="weekly">
+        <AppRouter />
+      </APIProvider>
+    </>
   );
 }
