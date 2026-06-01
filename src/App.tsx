@@ -545,7 +545,7 @@ function AppContent() {
             <div className="group cursor-pointer">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-6 border border-white/5 relative">
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c4/Mercedes-Benz_W214_E_450_4MATIC_EXCLUSIVE_Obsidian_Black_%282%29.jpg" alt="E-Class" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 shadow-xl" referrerPolicy="no-referrer" />
+                <img src="/Merc_e-class_1.jpeg" alt="E-Class" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 shadow-xl" referrerPolicy="no-referrer" />
               </div>
               <h3 className="text-xl font-medium mb-2">Mercedes E-Class</h3>
               <div className="flex items-center gap-6 text-sm text-white/50">
