@@ -59,6 +59,46 @@ const TESTIMONIALS = [
   }
 ];
 
+type AirportFee = {
+  [key: string]: { "5": number | null; "10": number | null; "15": number | null; "20": number | null; "30": number | null; };
+};
+
+const AIRPORT_FEES: AirportFee = {
+  "aberdeen": { "5": 7.00, "10": 7.00, "15": 7.00, "20": 12.00, "30": 22.00 },
+  "belfast city": { "5": 4.00, "10": 4.00, "15": 6.00, "20": 6.00, "30": 20.00 },
+  "belfast int": { "5": 5.00, "10": 5.00, "15": 8.00, "20": 8.00, "30": 13.00 },
+  "birmingham": { "5": 7.00, "10": 7.00, "15": 7.00, "20": 12.00, "30": 24.00 },
+  "bournemouth": { "5": 6.00, "10": 6.00, "15": 6.00, "20": 6.00, "30": 6.00 },
+  "bristol": { "5": 8.50, "10": 8.50, "15": 10.50, "20": 10.50, "30": 13.00 },
+  "cardiff": { "5": 3.00, "10": 3.00, "15": 6.00, "20": 6.00, "30": 9.00 },
+  "city of derry": { "5": 1.00, "10": 1.00, "15": 1.00, "20": 2.50, "30": 2.50 },
+  "cornwall newquay": { "5": 0.00, "10": 0.00, "15": 3.00, "20": 3.00, "30": 3.00 },
+  "east midlands": { "5": 5.00, "10": 5.00, "15": 5.00, "20": 10.00, "30": 20.00 },
+  "edinburgh": { "5": 8.50, "10": 8.50, "15": 13.50, "20": 18.50, "30": 28.50 },
+  "exeter": { "5": 6.00, "10": 6.00, "15": 6.00, "20": 7.50, "30": 7.50 },
+  "glasgow": { "5": 7.00, "10": 7.00, "15": 7.00, "20": 12.00, "30": 22.00 },
+  "glasgow prestwick": { "5": 4.50, "10": 4.50, "15": 4.50, "20": 4.50, "30": 4.50 },
+  "humberside": { "5": 0.00, "10": 0.00, "15": 0.00, "20": 5.00, "30": 5.00 },
+  "guernsey": { "5": 0.00, "10": 0.00, "15": 0.00, "20": 0.00, "30": 0.00 },
+  "inverness": { "5": 3.80, "10": 3.80, "15": 3.80, "20": 3.80, "30": 3.80 },
+  "isle of man": { "5": 0.00, "10": 0.00, "15": 0.00, "20": 3.00, "30": 3.00 },
+  "jersey": { "5": 0.00, "10": 0.00, "15": 0.00, "20": 0.00, "30": 1.00 },
+  "leeds bradford": { "5": 8.00, "10": 8.00, "15": 10.00, "20": 10.00, "30": 13.50 },
+  "liverpool": { "5": 6.00, "10": 6.00, "15": 10.00, "20": 10.00, "30": 25.00 },
+  "london city": { "5": 8.00, "10": 13.00, "15": null, "20": null, "30": null },
+  "london gatwick": { "5": 10.00, "10": 10.00, "15": 15.00, "20": 20.00, "30": 30.00 },
+  "london heathrow": { "5": 7.00, "10": 7.00, "15": null, "20": null, "30": null },
+  "london luton": { "5": 7.00, "10": 7.00, "15": 12.00, "20": 17.00, "30": 27.00 },
+  "london southend": { "5": 8.00, "10": 8.00, "15": null, "20": null, "30": null },
+  "london stansted": { "5": 10.00, "10": 10.00, "15": 10.00, "20": 28.00, "30": 28.00 },
+  "manchester": { "5": 5.00, "10": 6.40, "15": 25.00, "20": 25.00, "30": 25.00 },
+  "newcastle": { "5": 6.00, "10": 6.00, "15": 12.00, "20": 12.00, "30": 12.00 },
+  "norwich": { "5": 6.00, "10": 6.00, "15": 6.00, "20": 6.00, "30": 6.00 },
+  "sumburgh": { "5": 0.00, "10": 0.00, "15": 0.00, "20": 0.00, "30": 0.00 },
+  "southampton": { "5": 7.00, "10": 7.00, "15": 7.00, "20": 7.00, "30": null },
+  "teesside": { "5": 2.50, "10": 2.50, "15": 5.00, "20": 5.00, "30": 5.00 }
+};
+
 function AutocompleteInput({ className, onPlaceSelected, ...props }: React.ComponentProps<typeof Input> & { onPlaceSelected?: (place: google.maps.places.PlaceResult | null) => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const placesLib = useMapsLibrary('places');
@@ -214,11 +254,36 @@ function AppContent() {
   const [date, setDate] = useState<Date>();
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [waitDuration, setWaitDuration] = useState<string>("5");
   
   const [pickupPlace, setPickupPlace] = useState<google.maps.places.PlaceResult | null>(null);
   const [dropoffPlace, setDropoffPlace] = useState<google.maps.places.PlaceResult | null>(null);
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
   const routesLib = useMapsLibrary('routes');
+
+  const identifyAirport = (place: google.maps.places.PlaceResult | null) => {
+    if (!place || (!place.name && !place.formatted_address)) return null;
+    const isAirportType = place.types?.includes('airport');
+    const name = place.name?.toLowerCase() || '';
+    const address = place.formatted_address?.toLowerCase() || '';
+    
+    if (isAirportType || name.includes('airport') || address.includes('airport')) {
+      for (const airport of Object.keys(AIRPORT_FEES)) {
+        if (name.includes(airport) || address.includes(airport)) return airport;
+      }
+      if (name.includes('heathrow')) return 'london heathrow';
+      if (name.includes('gatwick')) return 'london gatwick';
+      if (name.includes('stansted')) return 'london stansted';
+      if (name.includes('luton')) return 'london luton';
+      if (name.includes('southend')) return 'london southend';
+      if (name.includes('city') && name.includes('london')) return 'london city';
+    }
+    return null;
+  };
+
+  const pickupAirport = identifyAirport(pickupPlace);
+  const dropoffAirport = identifyAirport(dropoffPlace);
+  const airportName = pickupAirport || dropoffAirport;
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -289,10 +354,13 @@ function AppContent() {
         const distanceMeters = route.legs[0]?.distance?.value || 0;
         const distanceMiles = distanceMeters * 0.001051371;
         
-        let price = Math.round(distanceMiles * 3);
-        const isAirport = pickupPlace.types?.includes('airport') || dropoffPlace.types?.includes('airport');
-        if (isAirport) {
-          price += 10;
+        let price = Math.round(distanceMiles * 2.5);
+        
+        if (airportName && AIRPORT_FEES[airportName]) {
+          const fee = AIRPORT_FEES[airportName][waitDuration as keyof typeof AIRPORT_FEES[string]];
+          if (typeof fee === 'number') {
+            price += fee;
+          }
         }
         
         setEstimatedPrice(price);
@@ -304,7 +372,7 @@ function AppContent() {
       setEstimatedPrice(null);
     });
 
-  }, [pickupPlace, dropoffPlace, routesLib]);
+  }, [pickupPlace, dropoffPlace, routesLib, airportName, waitDuration]);
 
   const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -320,7 +388,8 @@ function AppContent() {
         time: formData.get("time"),
         vehicleOptions: formData.get("vehicle") || "Not selected",
         phone: formData.get("phone"),
-        email: formData.get("email")
+        email: formData.get("email"),
+        waitTime: airportName ? waitDuration : null
       };
 
       const res = await fetch("/api/book", {
@@ -501,13 +570,31 @@ function AppContent() {
                   </div>
                 </div>
 
+                {airportName && (
+                  <div className="space-y-2 mt-4 animate-in fade-in slide-in-from-top-2 duration-500">
+                    <Label className="text-[9px] uppercase tracking-widest opacity-40 text-white">Wait Time at Airport</Label>
+                    <Select name="waitTime" value={waitDuration} onValueChange={setWaitDuration}>
+                      <SelectTrigger className="w-full bg-black/40 border-white/10 text-white hover:bg-white/5 rounded-sm h-12 md:h-10 text-sm md:text-xs">
+                         <SelectValue placeholder="Select wait duration" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-dark-bg border-white/10 text-white text-xs">
+                        <SelectItem value="5">5 Minutes</SelectItem>
+                        <SelectItem value="10">10 Minutes</SelectItem>
+                        {AIRPORT_FEES[airportName]["15"] !== null && <SelectItem value="15">15 Minutes</SelectItem>}
+                        {AIRPORT_FEES[airportName]["20"] !== null && <SelectItem value="20">20 Minutes</SelectItem>}
+                        {AIRPORT_FEES[airportName]["30"] !== null && <SelectItem value="30">30 Minutes</SelectItem>}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
                 {estimatedPrice !== null && (
                   <div className="mt-4 p-4 bg-white/[0.03] border border-white/10 rounded-sm">
                     <p className="text-xs text-white/70 flex justify-between items-center">
                       <span className="uppercase tracking-widest text-[9px] opacity-60">Estimated Price</span>
                       <span className="font-bold text-lg text-gold mr-1">£{estimatedPrice}</span>
                     </p>
-                    <p className="text-[10px] text-white/30 mt-1">Based on an estimated distance at £3 per mile{(pickupPlace?.types?.includes('airport') || dropoffPlace?.types?.includes('airport')) ? ' + £10 airport surcharge' : ''}.</p>
+                    <p className="text-[10px] text-white/30 mt-1">Based on an estimated distance at £2.50 per mile{airportName ? ' + airport wait fee' : ''}.</p>
                   </div>
                 )}
 
@@ -610,7 +697,8 @@ function AppContent() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-normal text-white mb-2 drop-shadow-md">Airport Transfers</h3>
-                <p className="text-sm text-white/90 leading-relaxed font-normal drop-shadow-sm">Relax before and after your flight with our punctual airport transfer services across all major UK airports.</p>
+                <p className="text-sm text-white/90 leading-relaxed font-normal drop-shadow-sm mb-4">Relax before and after your flight with our punctual airport transfer services across all major UK airports.</p>
+                <a href="#airport-fees" className="inline-flex items-center justify-center bg-gold text-black hover:bg-gold-hover text-[11px] font-bold uppercase tracking-widest py-3 px-6 rounded-sm transition-colors mt-2">See Airport Fees</a>
               </div>
             </div>
             
@@ -985,18 +1073,84 @@ function AppContent() {
   );
 }
 
-function AppRouter() {
-  const [currentPath, setCurrentPath] = useState(
-    window.location.hash === '#privacy' ? '#privacy' : '#'
+function AirportFeesPage() {
+  return (
+    <div className="min-h-screen bg-dark-bg text-white font-sans selection:bg-gold selection:text-black">
+      {/* Navigation */}
+      <header className="fixed top-0 w-full z-50 border-b border-white/10 bg-black/95 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+          <a href="#" className="flex items-center">
+            <img 
+              src="/cbc-logo.jpeg" 
+              alt="Company Logo" 
+              className="h-14 sm:h-16 md:h-20 w-auto object-contain"
+            />
+          </a>
+          
+          <a href="#" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-xs sm:text-sm font-medium tracking-wider">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </a>
+        </div>
+      </header>
+
+      <main className="pt-40 pb-24 px-6 md:px-0">
+        <div className="max-w-5xl mx-auto bg-white/[0.02] p-8 md:p-12 border border-white/10 rounded-sm">
+          <h1 className="text-4xl font-serif mb-8 text-white">Airport Drop-off Charges</h1>
+          <p className="text-white/60 mb-8 text-sm">Below are the estimated wait times and corresponding drop-off charges for UK airports.</p>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-white/5 border-b border-white/10 text-gold">
+                <tr>
+                  <th className="p-4 font-medium">Airport</th>
+                  <th className="p-4 font-medium">5 mins</th>
+                  <th className="p-4 font-medium">10 mins</th>
+                  <th className="p-4 font-medium">15 mins</th>
+                  <th className="p-4 font-medium">20 mins</th>
+                  <th className="p-4 font-medium">30 mins</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 text-white/70">
+                {Object.entries(AIRPORT_FEES).map(([airport, fees]) => (
+                  <tr key={airport} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="p-4 capitalize">{airport}</td>
+                    <td className="p-4">{fees["5"] === null ? "FINE" : fees["5"] === 0 ? "FREE" : `£${fees["5"].toFixed(2)}`}</td>
+                    <td className="p-4">{fees["10"] === null ? "FINE" : fees["10"] === 0 ? "FREE" : `£${fees["10"].toFixed(2)}`}</td>
+                    <td className="p-4">{fees["15"] === null ? "FINE" : fees["15"] === 0 ? "FREE" : `£${fees["15"].toFixed(2)}`}</td>
+                    <td className="p-4">{fees["20"] === null ? "FINE" : fees["20"] === 0 ? "FREE" : `£${fees["20"].toFixed(2)}`}</td>
+                    <td className="p-4">{fees["30"] === null ? "FINE" : fees["30"] === 0 ? "FREE" : `£${fees["30"].toFixed(2)}`}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <footer className="bg-black py-8 border-t border-white/10 text-center text-white/50 text-xs">
+        <p>&copy; {new Date().getFullYear()} Chauffeured By Cas. All rights reserved.</p>
+      </footer>
+    </div>
   );
+}
+
+function AppRouter() {
+  const getInitialPath = () => {
+    const hash = window.location.hash;
+    if (hash === '#privacy' || hash === '#airport-fees') return hash;
+    return '#';
+  };
+
+  const [currentPath, setCurrentPath] = useState(getInitialPath());
 
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
-      if (hash === '#privacy') {
-        setCurrentPath('#privacy');
+      if (hash === '#privacy' || hash === '#airport-fees') {
+        setCurrentPath(hash);
         window.scrollTo(0, 0);
-      } else if (currentPath === '#privacy') {
+      } else if (currentPath === '#privacy' || currentPath === '#airport-fees') {
         setCurrentPath('#');
         if (hash === '#' || !hash) {
           window.scrollTo(0, 0);
@@ -1013,6 +1167,10 @@ function AppRouter() {
 
   if (currentPath === '#privacy') {
     return <PrivacyPolicyPage />;
+  }
+  
+  if (currentPath === '#airport-fees') {
+    return <AirportFeesPage />;
   }
 
   return <AppContent />;

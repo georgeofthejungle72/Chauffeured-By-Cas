@@ -18,7 +18,7 @@ async function startServer() {
     }
 
     const resend = new Resend(resendKey);
-    const { name, pickup, dropoff, date, time, vehicleOptions, phone, email } = req.body;
+    const { name, pickup, dropoff, date, time, vehicleOptions, phone, email, waitTime } = req.body;
 
     if (!name || !phone || !email) {
       return res.status(400).json({ error: "Name, phone and email are required fields." });
@@ -27,7 +27,7 @@ async function startServer() {
     try {
       const data = await resend.emails.send({
         from: 'Enquiries <onboarding@resend.dev>',
-        to: 'cassaleem92@gmail.com',
+        to: 'Cassaleem92@gmail.com',
         subject: 'New Chauffeur Booking!',
         html: `
           <h2>Booking Details -</h2>
@@ -35,6 +35,7 @@ async function startServer() {
           <p><strong>Time:</strong> ${time} GMT</p>
           <p><strong>Pick-up:</strong> ${pickup}</p>
           <p><strong>Drop-off:</strong> ${dropoff}</p>
+          ${waitTime ? `<p><strong>Wait Time At Airport:</strong> ${waitTime} Minutes</p>` : ''}
           <p><strong>Vehicle:</strong> ${vehicleOptions}</p>
           <p><strong>Customer Name:</strong> ${name}</p>
           <p><strong>Phone:</strong> ${phone}</p>
