@@ -502,7 +502,7 @@ function AppContent() {
         <div className="max-w-7xl mx-auto px-6 w-full z-10 grid lg:grid-cols-2 gap-12 items-center mt-12">
           <div className="space-y-6">
             <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-gold">Executive Travel Redefined</p>
-            <h1 className="text-5xl md:text-7xl font-serif leading-[1.1] font-light">
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-serif leading-[1.1] font-light">
               Premium <br />
               <span className="italic">Chauffeur</span> <br />
               Services.
