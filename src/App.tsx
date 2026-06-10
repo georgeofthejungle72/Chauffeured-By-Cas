@@ -252,6 +252,7 @@ function PrivacyPolicyPage() {
 
 function AppContent() {
   const [date, setDate] = useState<Date>();
+  const [time, setTime] = useState<string>("");
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [waitDuration, setWaitDuration] = useState<string>("5");
@@ -259,6 +260,8 @@ function AppContent() {
   const [pickupPlace, setPickupPlace] = useState<google.maps.places.PlaceResult | null>(null);
   const [dropoffPlace, setDropoffPlace] = useState<google.maps.places.PlaceResult | null>(null);
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
+  const [estimatedMiles, setEstimatedMiles] = useState<number | null>(null);
+  const [isPeak, setIsPeak] = useState<boolean>(false);
   const routesLib = useMapsLibrary('routes');
 
   const identifyAirport = (place: google.maps.places.PlaceResult | null) => {
@@ -339,6 +342,7 @@ function AppContent() {
   useEffect(() => {
     if (!routesLib || !pickupPlace?.geometry?.location || !dropoffPlace?.geometry?.location) {
       setEstimatedPrice(null);
+      setEstimatedMiles(null);
       return;
     }
 
@@ -352,9 +356,36 @@ function AppContent() {
       if (response && response.routes && response.routes.length > 0) {
         const route = response.routes[0];
         const distanceMeters = route.legs[0]?.distance?.value || 0;
-        const distanceMiles = distanceMeters * 0.001051371;
+        const distanceMiles = distanceMeters * 0.000621371;
         
-        let price = Math.round(distanceMiles * 2.5);
+        let pricePerMile = 1.8;
+        let peak = false;
+        if (date && time) {
+          const [hours, minutes] = time.split(':').map(Number);
+          const timeInMinutes = hours * 60 + minutes;
+          const day = date.getDay();
+          
+          if (day >= 1 && day <= 5) {
+            if ((timeInMinutes >= 480 && timeInMinutes <= 600) || (timeInMinutes >= 960 && timeInMinutes <= 1140)) {
+              pricePerMile = 2.0;
+              peak = true;
+            }
+          } else if (day === 6) {
+            if (timeInMinutes >= 660 && timeInMinutes <= 780) {
+              pricePerMile = 2.0;
+              peak = true;
+            }
+          } else if (day === 0) {
+            if (timeInMinutes >= 720 && timeInMinutes <= 1140) {
+              pricePerMile = 2.0;
+              peak = true;
+            }
+          }
+        }
+        
+        setIsPeak(peak);
+        
+        let price = Math.max(5, Math.round(distanceMiles * pricePerMile));
         
         if (airportName && AIRPORT_FEES[airportName]) {
           const fee = AIRPORT_FEES[airportName][waitDuration as keyof typeof AIRPORT_FEES[string]];
@@ -364,15 +395,19 @@ function AppContent() {
         }
         
         setEstimatedPrice(price);
+        setEstimatedMiles(distanceMiles);
       } else {
         setEstimatedPrice(null);
+        setEstimatedMiles(null);
+        setIsPeak(false);
       }
     }).catch((err: any) => {
       console.error("Failed to compute route", err);
       setEstimatedPrice(null);
+      setEstimatedMiles(null);
+      setIsPeak(false);
     });
-
-  }, [pickupPlace, dropoffPlace, routesLib, airportName, waitDuration]);
+  }, [pickupPlace, dropoffPlace, routesLib, airportName, waitDuration, date, time]);
 
   const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -541,7 +576,7 @@ function AppContent() {
                     <Label className="text-[9px] uppercase tracking-widest opacity-40 text-white">Time</Label>
                     <div className="relative">
                       <Clock className="absolute left-3 top-4 md:top-3 h-4 w-4 text-white/40" />
-                      <Input name="time" type="time" required className="w-full pl-9 bg-black/40 border-white/10 text-white focus-visible:ring-1 focus-visible:ring-gold rounded-sm h-12 md:h-10 text-sm md:text-xs [color-scheme:dark]" />
+                      <Input name="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} required className="w-full pl-9 bg-black/40 border-white/10 text-white focus-visible:ring-1 focus-visible:ring-gold rounded-sm h-12 md:h-10 text-sm md:text-xs [color-scheme:dark]" />
                     </div>
                   </div>
                 </div>
@@ -578,11 +613,19 @@ function AppContent() {
                          <SelectValue placeholder="Select wait duration" />
                       </SelectTrigger>
                       <SelectContent className="bg-dark-bg border-white/10 text-white text-xs">
-                        <SelectItem value="5">5 Minutes</SelectItem>
-                        <SelectItem value="10">10 Minutes</SelectItem>
-                        {AIRPORT_FEES[airportName]["15"] !== null && <SelectItem value="15">15 Minutes</SelectItem>}
-                        {AIRPORT_FEES[airportName]["20"] !== null && <SelectItem value="20">20 Minutes</SelectItem>}
-                        {AIRPORT_FEES[airportName]["30"] !== null && <SelectItem value="30">30 Minutes</SelectItem>}
+                        {(() => {
+                          const limits = ["30", "20", "15", "10", "5"];
+                          const maxTime = limits.find(t => AIRPORT_FEES[airportName][t as keyof typeof AIRPORT_FEES[string]] !== null);
+                          return (
+                            <>
+                              <SelectItem value="5">{maxTime === "5" ? "Up To 5 Minutes" : "5 Minutes"}</SelectItem>
+                              <SelectItem value="10">{maxTime === "10" ? "Up To 10 Minutes" : "10 Minutes"}</SelectItem>
+                              {AIRPORT_FEES[airportName]["15"] !== null && <SelectItem value="15">{maxTime === "15" ? "Up To 15 Minutes" : "15 Minutes"}</SelectItem>}
+                              {AIRPORT_FEES[airportName]["20"] !== null && <SelectItem value="20">{maxTime === "20" ? "Up To 20 Minutes" : "20 Minutes"}</SelectItem>}
+                              {AIRPORT_FEES[airportName]["30"] !== null && <SelectItem value="30">{maxTime === "30" ? "Up To 30 Minutes" : "30 Minutes"}</SelectItem>}
+                            </>
+                          );
+                        })()}
                       </SelectContent>
                     </Select>
                   </div>
@@ -590,11 +633,11 @@ function AppContent() {
 
                 {estimatedPrice !== null && (
                   <div className="mt-4 p-4 bg-white/[0.03] border border-white/10 rounded-sm">
-                    <p className="text-xs text-white/70 flex justify-between items-center">
+                    <p className="text-xs text-white/70 flex justify-between items-center mb-1">
                       <span className="uppercase tracking-widest text-[9px] opacity-60">Estimated Price</span>
                       <span className="font-bold text-lg text-gold mr-1">£{estimatedPrice}</span>
                     </p>
-                    <p className="text-[10px] text-white/30 mt-1">Based on an estimated distance at £2.50 per mile{airportName ? ' + airport wait fee' : ''}.</p>
+                    <p className="text-[10px] text-white/30 mt-1">Based on an estimated distance of {estimatedMiles?.toFixed(1)} miles at £1.80 per mile (minimum £5 charge){isPeak ? ' + 20p/mile peak time surcharge' : ''}{airportName ? ' + airport wait fee' : ''}.</p>
                   </div>
                 )}
 
@@ -1108,7 +1151,7 @@ function AirportFeesPage() {
                   <th className="p-4 font-medium">10 mins</th>
                   <th className="p-4 font-medium">15 mins</th>
                   <th className="p-4 font-medium">20 mins</th>
-                  <th className="p-4 font-medium">30 mins</th>
+                  <th className="p-4 font-medium">Up to 30 mins</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5 text-white/70">
