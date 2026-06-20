@@ -25,8 +25,8 @@ async function startServer() {
     }
 
     try {
-      const data = await resend.emails.send({
-        from: 'Enquiries <enquiries@chauffeuredbycas.com>',
+      const { data, error } = await resend.emails.send({
+        from: 'Bookings <bookings@chauffeuredbycas.com>',
         to: 'enquiries@chauffeuredbycas.com',
         subject: 'New Chauffeur Booking!',
         html: `
@@ -45,10 +45,15 @@ async function startServer() {
         `,
       });
 
+      if (error) {
+        console.error("Resend error:", error);
+        return res.status(500).json({ error: error.message });
+      }
+
       res.status(200).json({ data });
-    } catch (error) {
-      console.error("Failed to send email", error);
-      res.status(500).json({ error: "Failed to send email" });
+    } catch (error: any) {
+      console.error("Exception sending email", error);
+      res.status(500).json({ error: error.message || "Failed to send email" });
     }
   });
 
@@ -63,7 +68,7 @@ async function startServer() {
     // Note: If using esbuild, cwd is the project root because we compiled it there.
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
-    app.get('*', (req, res) => {
+    app.get('*', (_req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
