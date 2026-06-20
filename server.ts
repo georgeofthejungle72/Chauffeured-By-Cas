@@ -26,7 +26,7 @@ async function startServer() {
 
     try {
       const data = await resend.emails.send({
-        from: 'Enquiries <bookings@chauffeuredbycas.com>',
+        from: 'Enquiries <enquiries@chauffeuredbycas.com>',
         to: 'enquiries@chauffeuredbycas.com',
         subject: 'New Chauffeur Booking!',
         html: `
