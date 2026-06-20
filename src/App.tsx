@@ -235,7 +235,7 @@ function PrivacyPolicyPage() {
               <h2 className="text-xl font-medium text-white mb-4">7. Contact Us</h2>
               <p>
                 If you have any questions about this privacy policy or our privacy practices, please contact us at: <br/>
-                Email: <a href="mailto:enquiries@chauffeuredbycas.co.uk" className="text-gold hover:underline">enquiries@chauffeuredbycas.co.uk</a><br/>
+                Email: <a href="mailto:enquiries@chauffeuredbycas.com" className="text-gold hover:underline">enquiries@chauffeuredbycas.com</a><br/>
                 Phone: <a href="tel:+447312250272" className="text-gold hover:underline">+44 7312 250272</a>
               </p>
             </section>
@@ -988,8 +988,8 @@ function AppContent() {
                 <div className="min-w-0">
                   <h4 className="text-white font-medium mb-1">Email</h4>
                   <p className="text-white/50 text-sm mb-3">We aim to respond to all emails within 1 hour.</p>
-                  <a href="mailto:enquiries@chauffeuredbycas.co.uk" className="text-base sm:text-xl font-light text-white hover:text-gold transition-colors block break-all sm:break-normal">
-                    enquiries@chauffeuredbycas.co.uk
+                  <a href="mailto:enquiries@chauffeuredbycas.com" className="text-base sm:text-xl font-light text-white hover:text-gold transition-colors block break-all sm:break-normal">
+                    enquiries@chauffeuredbycas.com
                   </a>
                 </div>
               </div>
@@ -1087,7 +1087,7 @@ function AppContent() {
             <div className="flex flex-col gap-3 min-w-0">
               <p>Birmingham, UK</p>
               <a href="tel:+447312250272" className="hover:text-white transition-colors">+44 7312 250272</a>
-              <a href="mailto:enquiries@chauffeuredbycas.co.uk" className="hover:text-white transition-colors break-all sm:break-normal">enquiries@chauffeuredbycas.co.uk</a>
+              <a href="mailto:enquiries@chauffeuredbycas.com" className="hover:text-white transition-colors break-all sm:break-normal">enquiries@chauffeuredbycas.com</a>
             </div>
           </div>
         </div>

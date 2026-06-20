@@ -26,11 +26,11 @@ async function startServer() {
 
     try {
       const data = await resend.emails.send({
-        from: 'Enquiries <onboarding@resend.dev>',
-        to: 'Cassaleem92@gmail.com',
+        from: 'Enquiries <bookings@chauffeuredbycas.com>',
+        to: 'enquiries@chauffeuredbycas.com',
         subject: 'New Chauffeur Booking!',
         html: `
-          <h2>Booking Details -</h2>
+          <h2>Booking Details</h2>
           <p><strong>Date:</strong> ${date}</p>
           <p><strong>Time:</strong> ${time} GMT</p>
           <p><strong>Pick-up:</strong> ${pickup}</p>
@@ -40,8 +40,8 @@ async function startServer() {
           <p><strong>Customer Name:</strong> ${name}</p>
           <p><strong>Phone:</strong> ${phone}</p>
           <p><strong>Email:</strong> ${email}</p>
-          <br/>
-          <p>Chauffeur request by customer from chauffeuredbycas.co.uk</p>
+          <br/><hr>
+          <p>Chauffeur request made by customer from chauffeuredbycas.co.uk</p>
         `,
       });
 
