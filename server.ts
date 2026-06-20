@@ -41,7 +41,7 @@ async function startServer() {
           <p><strong>Phone:</strong> ${phone}</p>
           <p><strong>Email:</strong> ${email}</p>
           <br/><hr>
-          <p>Chauffeur request made by customer from chauffeuredbycas.co.uk</p>
+          <p>Chauffeur request made by customer from chauffeuredbycas.com</p>
         `,
       });
 
