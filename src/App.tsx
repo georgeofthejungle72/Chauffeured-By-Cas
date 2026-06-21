@@ -358,7 +358,7 @@ function AppContent() {
         const distanceMeters = route.legs[0]?.distance?.value || 0;
         const distanceMiles = distanceMeters * 0.000621371;
         
-        let pricePerMile = 1.8;
+        let pricePerMile = 2.0;
         let peak = false;
         if (date && time) {
           const [hours, minutes] = time.split(':').map(Number);
@@ -367,17 +367,17 @@ function AppContent() {
           
           if (day >= 1 && day <= 5) {
             if ((timeInMinutes >= 480 && timeInMinutes <= 600) || (timeInMinutes >= 960 && timeInMinutes <= 1140)) {
-              pricePerMile = 2.0;
+              pricePerMile = 2.2;
               peak = true;
             }
           } else if (day === 6) {
             if (timeInMinutes >= 660 && timeInMinutes <= 780) {
-              pricePerMile = 2.0;
+              pricePerMile = 2.2;
               peak = true;
             }
           } else if (day === 0) {
             if (timeInMinutes >= 720 && timeInMinutes <= 1140) {
-              pricePerMile = 2.0;
+              pricePerMile = 2.2;
               peak = true;
             }
           }
@@ -637,7 +637,7 @@ function AppContent() {
                       <span className="uppercase tracking-widest text-[9px] opacity-60">Estimated Price</span>
                       <span className="font-bold text-lg text-gold mr-1">£{estimatedPrice}</span>
                     </p>
-                    <p className="text-[10px] text-white/30 mt-1">Based on an estimated distance of {estimatedMiles?.toFixed(1)} miles at £1.80 per mile (minimum £5 charge){isPeak ? ' + 20p/mile peak time surcharge' : ''}{airportName ? ' + airport wait fee' : ''}.</p>
+                    <p className="text-[10px] text-white/30 mt-1">Based on an estimated distance of {estimatedMiles?.toFixed(1)} miles at £2.00 per mile (minimum £5 charge){isPeak ? ' + 20p/mile peak time surcharge' : ''}{airportName ? ' + airport wait fee' : ''}.</p>
                   </div>
                 )}
 
